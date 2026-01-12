@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
     <title>MASI Framework - iTabs Guide</title>
     <style>
         * {
@@ -13,9 +14,14 @@
         }
 
 ```
+    html, body {
+        background: #0f0f1a !important;
+        background-color: #0f0f1a !important;
+    }
+    
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+        background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%) !important;
         min-height: 100vh;
         color: #e4e4e4;
         line-height: 1.6;
@@ -25,57 +31,76 @@
         max-width: 700px;
         margin: 0 auto;
         padding: 20px;
+        padding-bottom: 40px;
     }
     
     header {
         text-align: center;
-        padding: 30px 20px;
-        background: rgba(255,255,255,0.03);
-        border-radius: 16px;
+        padding: 40px 24px;
+        background: linear-gradient(135deg, rgba(123,44,191,0.15) 0%, rgba(0,212,255,0.1) 100%);
+        border-radius: 20px;
         margin-bottom: 24px;
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid rgba(0,212,255,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 50%, rgba(0,212,255,0.08) 0%, transparent 50%);
+        pointer-events: none;
     }
     
     .badge {
         display: inline-block;
         background: linear-gradient(135deg, #7b2cbf, #00d4ff);
         color: white;
-        padding: 4px 12px;
+        padding: 6px 16px;
         border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
     }
     
     h1 {
-        font-size: 1.8rem;
-        margin-bottom: 8px;
-        background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #00d4ff 0%, #7b2cbf 50%, #00d4ff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        font-weight: 700;
     }
     
     .subtitle {
-        color: #888;
-        font-size: 0.95rem;
-        margin-bottom: 16px;
+        color: #9ca3af;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .author-info {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        color: #666;
+        gap: 10px;
+        color: #6b7280;
         font-size: 0.85rem;
     }
     
     .author-info a {
         color: #00d4ff;
         text-decoration: none;
+        font-weight: 500;
     }
     
     .author-info a:hover {
@@ -85,61 +110,68 @@
     /* Section Styles */
     .section {
         background: rgba(255,255,255,0.03);
-        border-radius: 12px;
-        margin-bottom: 16px;
+        border-radius: 16px;
+        margin-bottom: 12px;
         border: 1px solid rgba(255,255,255,0.08);
         overflow: hidden;
+        transition: border-color 0.2s;
+    }
+    
+    .section:hover {
+        border-color: rgba(0,212,255,0.3);
     }
     
     .section-header {
-        padding: 16px 20px;
+        padding: 18px 20px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
         transition: background 0.2s;
     }
     
     .section-header:hover {
-        background: rgba(255,255,255,0.03);
+        background: rgba(255,255,255,0.02);
     }
     
     .section-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
+        font-size: 1.3rem;
         flex-shrink: 0;
     }
     
+    .icon-orange { background: rgba(251,146,60,0.15); }
     .icon-blue { background: rgba(0,212,255,0.15); }
-    .icon-purple { background: rgba(123,44,191,0.15); }
-    .icon-green { background: rgba(0,200,150,0.15); }
-    .icon-orange { background: rgba(255,150,50,0.15); }
-    .icon-pink { background: rgba(255,100,150,0.15); }
+    .icon-green { background: rgba(74,222,128,0.15); }
+    .icon-purple { background: rgba(168,85,247,0.15); }
+    .icon-pink { background: rgba(244,114,182,0.15); }
     
     .section-title {
         flex: 1;
     }
     
     .section-title h2 {
-        font-size: 1rem;
+        font-size: 1.05rem;
         font-weight: 600;
-        margin-bottom: 2px;
+        margin-bottom: 3px;
+        color: #f3f4f6;
     }
     
     .section-title span {
         font-size: 0.8rem;
-        color: #666;
+        color: #6b7280;
     }
     
     .toggle-arrow {
         color: #00d4ff;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: transform 0.3s;
+        opacity: 0.7;
     }
     
     .section.open .toggle-arrow {
@@ -148,7 +180,7 @@
     
     .section-content {
         display: none;
-        border-top: 1px solid rgba(255,255,255,0.08);
+        border-top: 1px solid rgba(255,255,255,0.06);
     }
     
     .section.open .section-content {
@@ -158,7 +190,7 @@
     /* Tab Styles */
     .tabs {
         display: flex;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: rgba(0,0,0,0.2);
     }
     
     .tab {
@@ -166,19 +198,22 @@
         padding: 12px;
         text-align: center;
         cursor: pointer;
-        font-size: 0.85rem;
-        color: #666;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #6b7280;
         transition: all 0.2s;
         border-bottom: 2px solid transparent;
     }
     
     .tab:hover {
-        color: #aaa;
+        color: #9ca3af;
+        background: rgba(255,255,255,0.02);
     }
     
     .tab.active {
         color: #00d4ff;
         border-bottom-color: #00d4ff;
+        background: rgba(0,212,255,0.05);
     }
     
     .tab-content {
@@ -191,30 +226,36 @@
     }
     
     .tab-content h3 {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         color: #00d4ff;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        font-weight: 600;
     }
     
     .tab-content p {
-        color: #bbb;
-        margin-bottom: 12px;
+        color: #d1d5db;
+        margin-bottom: 14px;
         font-size: 0.95rem;
     }
     
     .tab-content ul {
         list-style: none;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
     }
     
     .tab-content li {
-        padding: 8px 0;
-        padding-left: 20px;
+        padding: 10px 0;
+        padding-left: 24px;
         position: relative;
-        color: #bbb;
+        color: #d1d5db;
         font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    
+    .tab-content li:last-child {
+        border-bottom: none;
     }
     
     .tab-content li::before {
@@ -222,57 +263,68 @@
         position: absolute;
         left: 0;
         color: #00d4ff;
+        font-weight: bold;
+    }
+    
+    .tab-content li strong {
+        color: #f3f4f6;
     }
     
     /* Highlight Box */
     .highlight-box {
         background: rgba(0,212,255,0.08);
         border-left: 3px solid #00d4ff;
-        padding: 12px 16px;
-        border-radius: 0 8px 8px 0;
-        margin: 12px 0;
+        padding: 14px 18px;
+        border-radius: 0 10px 10px 0;
+        margin: 16px 0;
     }
     
     .highlight-box.purple {
-        background: rgba(123,44,191,0.08);
-        border-left-color: #7b2cbf;
+        background: rgba(168,85,247,0.1);
+        border-left-color: #a855f7;
     }
     
     .highlight-box p {
         margin: 0;
         font-size: 0.9rem;
+        color: #d1d5db;
+    }
+    
+    .highlight-box strong {
+        color: #f3f4f6;
     }
     
     /* Role Cards */
     .role-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin: 12px 0;
+        gap: 10px;
+        margin: 16px 0;
     }
     
     .role-card {
-        background: rgba(255,255,255,0.03);
-        border-radius: 8px;
-        padding: 12px;
+        background: rgba(255,255,255,0.04);
+        border-radius: 12px;
+        padding: 16px 12px;
         text-align: center;
+        border: 1px solid rgba(255,255,255,0.06);
     }
     
     .role-card .emoji {
-        font-size: 1.5rem;
-        margin-bottom: 6px;
+        font-size: 1.8rem;
+        margin-bottom: 8px;
     }
     
     .role-card .name {
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         margin-bottom: 4px;
-        color: #e4e4e4;
+        color: #f3f4f6;
     }
     
     .role-card .desc {
         font-size: 0.75rem;
-        color: #888;
+        color: #9ca3af;
     }
     
     /* Smart Link */
@@ -280,35 +332,64 @@
         display: block;
         background: rgba(255,255,255,0.03);
         border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin: 12px 0;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin: 14px 0;
         text-decoration: none;
         transition: all 0.2s;
     }
     
     .smart-link:hover {
-        background: rgba(255,255,255,0.06);
-        border-color: #00d4ff;
+        background: rgba(0,212,255,0.08);
+        border-color: rgba(0,212,255,0.4);
+        transform: translateY(-1px);
     }
     
     .smart-link .link-title {
         color: #00d4ff;
-        font-weight: 500;
+        font-weight: 600;
         font-size: 0.9rem;
         margin-bottom: 4px;
     }
     
     .smart-link .link-desc {
-        color: #666;
+        color: #6b7280;
         font-size: 0.8rem;
+    }
+    
+    /* Quick Take Box */
+    .quick-take {
+        background: linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(0,212,255,0.08) 100%);
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 18px;
+        border: 1px solid rgba(168,85,247,0.2);
+    }
+    
+    .quick-take .note-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 0.75rem;
+        color: #a855f7;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .quick-take p {
+        font-size: 0.9rem;
+        color: #d1d5db;
+        margin: 0;
+        line-height: 1.7;
     }
     
     /* Footer */
     footer {
         text-align: center;
         padding: 30px 20px;
-        color: #444;
+        color: #4b5563;
         font-size: 0.8rem;
     }
     
@@ -317,29 +398,8 @@
         text-decoration: none;
     }
     
-    /* Jon's Note */
-    .jons-note {
-        background: rgba(123,44,191,0.08);
-        border-radius: 8px;
-        padding: 16px;
-        margin-top: 16px;
-    }
-    
-    .jons-note .note-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-        font-size: 0.8rem;
-        color: #7b2cbf;
-        font-weight: 600;
-    }
-    
-    .jons-note p {
-        font-size: 0.85rem;
-        color: #aaa;
-        font-style: italic;
-        margin: 0;
+    footer a:hover {
+        text-decoration: underline;
     }
 </style>
 ```
@@ -478,7 +538,7 @@
                     <li>All four roles must be consulted</li>
                     <li>Drift detection checks for weird behaviour</li>
                     <li>Ethical arbitration resolves conflicts</li>
-                    <li>Trust Score calculated (combines fairness, logic, uncertainty)</li>
+                    <li>Trust Score calculated (fairness + logic + uncertainty)</li>
                     <li>Audit trail created automatically</li>
                 </ul>
                 <div class="highlight-box purple">
@@ -547,8 +607,8 @@
                     <li><strong>Transparent</strong> - You can see how decisions are made</li>
                     <li><strong>Governable</strong> - Clear accountability and audit trails</li>
                 </ul>
-                <div class="jons-note">
-                    <div class="note-header">📝 Quick Take</div>
+                <div class="quick-take">
+                    <div class="note-header">💡 Quick Take</div>
                     <p>Instead of trusting one AI to get everything right, MASI makes AI systems argue with themselves first. If the ethics module, the consequences module, the human-impact module, and the facts module can all agree - then maybe it's safe to act.</p>
                 </div>
             </div>
@@ -576,8 +636,8 @@
     </div>
 
     <footer>
-        <p>iTabs Guide • Created to help share complex ideas simply</p>
-        <p style="margin-top: 8px;">Original paper by <a href="https://www.tdcommons.org/dpubs_series/9043/" target="_blank">Joseph JM Walker</a> • December 2024</p>
+        <p>iTabs Guide • Making complex ideas simple</p>
+        <p style="margin-top: 8px;">Paper by <a href="https://www.tdcommons.org/dpubs_series/9043/" target="_blank">Joseph JM Walker</a> • Dec 2024</p>
     </footer>
 </div>
 
@@ -586,10 +646,8 @@
         const section = document.querySelector(`[data-section="${sectionNum}"]`);
         const wasOpen = section.classList.contains('open');
         
-        // Close all sections
         document.querySelectorAll('.section').forEach(s => s.classList.remove('open'));
         
-        // Toggle this one
         if (!wasOpen) {
             section.classList.add('open');
         }
@@ -598,11 +656,9 @@
     function switchTab(sectionNum, tabName) {
         const section = document.querySelector(`[data-section="${sectionNum}"]`);
         
-        // Update tab buttons
         section.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         event.target.classList.add('active');
         
-        // Update tab content
         section.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
         section.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
     }

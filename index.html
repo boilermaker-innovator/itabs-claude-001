@@ -416,6 +416,26 @@
         .nav-left { left: 0; }
         .nav-right { right: 0; }
 
+        /* Swipe arrow indicators */
+        .swipe-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            z-index: 11; pointer-events: none;
+            color: rgba(255,255,255,0.08); font-size: 28px;
+            transition: opacity 0.3s;
+        }
+        .swipe-arrow-left { left: 6px; }
+        .swipe-arrow-right { right: 6px; }
+        .swipe-arrow.hidden { opacity: 0; }
+        
+        /* Pulse on first load */
+        .swipe-arrow.intro {
+            animation: arrowPulse 2s ease-in-out 3;
+        }
+        @keyframes arrowPulse {
+            0%, 100% { color: rgba(255,255,255,0.06); }
+            50% { color: rgba(255,255,255,0.18); }
+        }
+
         .swipe-hint {
             text-align: center; padding: 6px; font-size: 12px;
             color: var(--text-muted); animation: fadeHint 3s ease-in-out forwards;
@@ -437,21 +457,22 @@
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-            z-index: 1000; align-items: flex-end; justify-content: center;
+            z-index: 1000; align-items: center; justify-content: center;
+            padding: 20px;
         }
         .modal-overlay.active { display: flex; }
 
         .modal {
-            background: var(--bg-secondary); border-radius: 20px 20px 0 0;
-            width: 100%; max-width: 430px; max-height: 55vh;
-            display: flex; flex-direction: column; animation: slideUp 0.25s ease;
+            background: var(--bg-secondary); border-radius: 20px;
+            width: 100%; max-width: 400px; max-height: 70vh;
+            display: flex; flex-direction: column; animation: modalPop 0.2s ease;
         }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .modal-handle { width: 36px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin: 10px auto 0; }
+        .modal-handle { display: none; }
 
         .modal-header {
-            padding: 14px 20px 10px; display: flex;
+            padding: 18px 20px 10px; display: flex;
             align-items: center; justify-content: space-between;
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
@@ -470,7 +491,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        .modal-body { padding: 14px 20px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .modal-body { padding: 14px 20px 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .modal-content { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
         .modal-content strong { color: var(--text-primary); font-weight: 600; }
     </style>
@@ -564,6 +585,8 @@
                     <div class="cards-wrapper" id="cardsWrapper">
                         <div class="nav-area nav-left" id="navLeft"></div>
                         <div class="nav-area nav-right" id="navRight"></div>
+                        <div class="swipe-arrow swipe-arrow-left intro" id="arrowLeft">‹</div>
+                        <div class="swipe-arrow swipe-arrow-right intro" id="arrowRight">›</div>
                     </div>
                     <div class="next-preview" id="nextPreview">
                         <span class="next-preview-label">Next:</span>
@@ -1136,6 +1159,13 @@
 
         switchScreen('cards');
         swipeHint.classList.remove('hidden');
+        
+        // Reset arrows for new path
+        $('arrowLeft').classList.add('hidden');
+        $('arrowLeft').classList.add('intro');
+        $('arrowRight').classList.remove('hidden');
+        $('arrowRight').classList.add('intro');
+        
         updateCard(startCard);
 
         // Sidebar active
@@ -1183,6 +1213,17 @@
         if (currentPath) {
             viewedCards.add(`${currentPath.id}-${index}`);
             updateProgressCounters();
+        }
+
+        // Arrows — hide left on first card, hide right on last
+        const arrowL = $('arrowLeft');
+        const arrowR = $('arrowRight');
+        if (currentPath) {
+            arrowL.classList.toggle('hidden', index === 0);
+            arrowR.classList.toggle('hidden', index === currentPath.cards.length - 1);
+            // Remove intro pulse after first navigation
+            arrowL.classList.remove('intro');
+            arrowR.classList.remove('intro');
         }
 
         // Next preview

@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Find the right Claude tool for you. Resources organised by what you need, not what things are.">
+    <meta property="og:title" content="iTabs / Claude — Find the right Claude tool for you">
+    <meta property="og:description" content="Resources organised by what you need, not what things are. Take a 2-question quiz or browse by goal.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://itabs.ai/claude">
+    <title>iTabs | Claude — Find the right Claude tool for you</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-primary: #0c0c0f;
+            --bg-secondary: #16161a;
+            --bg-tertiary: #222229;
+            --bg-card: #1c1c22;
+            --text-primary: #f0f0f2;
+            --text-secondary: #8b8b96;
+            --text-muted: #5c5c66;
+            --accent: #e8834a;
+            --accent-glow: rgba(232,131,74,0.15);
+            --i-button: #e8834a;
+            --card-radius: 20px;
+            --transition: 0.2s ease;
+            --green: #4ade80;
+            --blue: #60a5fa;
+            --purple: #a78bfa;
+            --yellow: #fbbf24;
+            --pink: #f472b6;
+        }
+
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* ===== DESKTOP LAYOUT ===== */
+        .desktop-wrapper { display: flex; height: 100%; max-width: 1200px; margin: 0 auto; }
+
+        .sidebar {
+            display: none; width: 300px; flex-shrink: 0;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 32px 24px; overflow-y: auto;
+            background: var(--bg-secondary);
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 14px; font-weight: 600; color: var(--accent);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
+        }
+        .sidebar-logo .logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+        .sidebar-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .sidebar-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+
+        .sidebar-section-label {
+            font-size: 11px; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+        }
+
+        .sidebar-path {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: 12px; cursor: pointer;
+            transition: all 0.15s ease; margin-bottom: 4px; border: 1px solid transparent;
+        }
+        .sidebar-path:hover { background: var(--bg-tertiary); }
+        .sidebar-path.active { background: var(--accent-glow); border-color: rgba(232,131,74,0.25); }
+        .sidebar-path-icon { font-size: 18px; width: 28px; text-align: center; }
+        .sidebar-path-info { flex: 1; }
+        .sidebar-path-name { font-size: 14px; font-weight: 600; }
+        .sidebar-path-count { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        .sidebar-path .viewed-badge {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: rgba(74,222,128,0.15); color: var(--green);
+            font-size: 10px; display: none; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .sidebar-path.visited .viewed-badge { display: flex; }
+
+        /* Progress counter in sidebar */
+        .sidebar-progress {
+            margin-top: 20px; padding: 14px 16px; border-radius: 12px;
+            background: var(--bg-tertiary); margin-bottom: 16px;
+        }
+        .sidebar-progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .sidebar-progress-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+        .sidebar-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+        .sidebar-progress-text { font-size: 12px; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+
+        .sidebar-cta { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .sidebar-cta-text { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .sidebar-cta-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 600; color: var(--accent);
+            text-decoration: none; transition: opacity 0.15s;
+        }
+        .sidebar-cta-link:hover { opacity: 0.8; }
+
+        .main-panel { flex: 1; min-width: 0; display: flex; justify-content: center; }
+
+        .container {
+            max-width: 430px; width: 100%; height: 100%;
+            display: flex; flex-direction: column; position: relative;
+            background: var(--bg-primary);
+        }
+
+        @media (min-width: 780px) {
+            .sidebar { display: flex; }
+            .container { border-left: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); }
+        }
+        @media (max-width: 779px) { .sidebar { display: none !important; } .desktop-welcome { display: none !important; } }
+
+        /* ===== SCREEN TRANSITIONS ===== */
+        .screen {
+            display: none; flex-direction: column; height: 100%;
+            opacity: 0; transition: opacity 0.25s ease;
+        }
+        .screen.active { display: flex; opacity: 1; }
+        .screen.entering { display: flex; opacity: 0; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+
+        /* ===== LANDING ===== */
+        .landing { padding: 0 20px; }
+
+        .landing-header { padding: 40px 0 12px; text-align: center; }
+
+        .landing-logo {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 15px; font-weight: 600; color: var(--accent);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px;
+        }
+        .landing-logo .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+        .landing-title { font-size: 26px; font-weight: 700; line-height: 1.15; margin-bottom: 6px; }
+        .landing-title .highlight { color: var(--accent); }
+        .landing-subtitle { font-size: 14px; color: var(--text-secondary); }
+
+        /* Start Here Banner */
+        .start-here-banner {
+            background: linear-gradient(135deg, rgba(232,131,74,0.1), rgba(232,131,74,0.04));
+            border: 1px solid rgba(232,131,74,0.2); border-radius: 14px;
+            padding: 16px 18px; margin: 20px 0 6px; cursor: pointer;
+            transition: all 0.2s ease; display: flex; align-items: center; gap: 14px;
+        }
+        .start-here-banner:hover { border-color: rgba(232,131,74,0.4); transform: translateY(-1px); }
+
+        .start-here-icon {
+            width: 44px; height: 44px; border-radius: 12px; background: var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+        }
+        .start-here-info { flex: 1; }
+        .start-here-label { font-size: 14px; font-weight: 700; color: var(--accent); }
+        .start-here-desc { font-size: 12px; color: var(--text-secondary); }
+        .start-here-arrow { color: var(--accent); font-size: 18px; }
+
+        .section-label {
+            font-size: 11px; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px;
+        }
+
+        /* Mobile progress */
+        .mobile-progress {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 0; margin-bottom: 4px;
+        }
+        .mobile-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+        .mobile-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
+        .mobile-progress-text { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+        @media (min-width: 780px) { .mobile-progress { display: none; } }
+
+        .path-cards { flex: 1; overflow-y: auto; padding-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .path-cards::-webkit-scrollbar { display: none; }
+
+        .path-card {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px; padding: 16px 18px; margin-bottom: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .path-card:hover, .path-card:active { background: var(--bg-tertiary); transform: translateY(-1px); }
+        .path-card.visited { border-color: rgba(74,222,128,0.15); }
+
+        .path-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .path-info { flex: 1; min-width: 0; }
+        .path-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .path-desc { font-size: 12px; color: var(--text-secondary); }
+        .path-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+        .path-count { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .path-visited-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: none; }
+        .path-card.visited .path-visited-dot { display: block; }
+        .path-arrow { color: var(--text-muted); font-size: 16px; flex-shrink: 0; transition: all 0.2s ease; }
+        .path-card:hover .path-arrow { transform: translateX(3px); color: var(--accent); }
+
+        /* ===== DESKTOP WELCOME (shown in main panel when no path active) ===== */
+        .desktop-welcome {
+            display: none; flex-direction: column; align-items: center;
+            justify-content: center; height: 100%; padding: 40px;
+            text-align: center;
+        }
+        .desktop-welcome.active { display: flex; }
+        .desktop-welcome-icon { font-size: 56px; margin-bottom: 20px; }
+        .desktop-welcome-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .desktop-welcome-title .highlight { color: var(--accent); }
+        .desktop-welcome-desc { font-size: 15px; color: var(--text-secondary); max-width: 320px; line-height: 1.6; margin-bottom: 28px; }
+
+        .desktop-welcome-quiz {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--accent); color: #000; border: none;
+            padding: 14px 28px; border-radius: 12px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .desktop-welcome-quiz:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .desktop-welcome-hint { font-size: 13px; color: var(--text-muted); margin-top: 16px; }
+
+        /* ===== QUIZ ===== */
+        .quiz { padding: 0 20px; }
+        .quiz-header { padding: 40px 0 20px; text-align: center; }
+
+        .quiz-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; color: var(--text-secondary); cursor: pointer;
+            margin-bottom: 16px; background: none; border: none;
+            font-family: inherit; transition: color 0.15s;
+        }
+        .quiz-back:hover { color: var(--text-primary); }
+
+        .quiz-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .quiz-subtitle { font-size: 14px; color: var(--text-secondary); }
+
+        .quiz-progress { display: flex; gap: 6px; margin: 20px 20px; }
+        .quiz-step { flex: 1; height: 4px; border-radius: 2px; background: var(--bg-tertiary); transition: background 0.3s; }
+        .quiz-step.active { background: var(--accent); }
+        .quiz-step.done { background: var(--text-primary); }
+
+        .quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 14px; padding: 0 4px; }
+
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+        .quiz-option {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 16px 18px; cursor: pointer;
+            transition: all 0.15s ease; display: flex; align-items: center;
+            gap: 12px; font-family: inherit; font-size: 14px;
+            color: var(--text-primary); text-align: left; width: 100%;
+        }
+        .quiz-option:hover { background: var(--bg-tertiary); border-color: rgba(232,131,74,0.3); }
+        .quiz-option.selected { background: var(--accent-glow); border-color: rgba(232,131,74,0.5); }
+        .quiz-option-icon { font-size: 20px; width: 28px; text-align: center; }
+
+        .quiz-result { display: none; text-align: center; padding: 24px 20px; }
+        .quiz-result.active { display: block; }
+        .quiz-result-icon { font-size: 48px; margin-bottom: 12px; }
+        .quiz-result-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .quiz-result-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.6; }
+        .quiz-result-start { font-size: 13px; color: var(--text-muted); font-style: italic; margin-bottom: 20px; }
+
+        .quiz-result-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--accent); color: #000; border: none;
+            padding: 14px 28px; border-radius: 12px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .quiz-result-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* ===== CARDS ===== */
+        .progress-container {
+            display: flex; gap: 4px; padding: 12px 16px 8px;
+            position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+            background: linear-gradient(to bottom, rgba(12,12,15,0.95) 0%, transparent 100%);
+        }
+        .progress-segment {
+            flex: 1; height: 3px; background: rgba(255,255,255,0.15);
+            border-radius: 2px; transition: background 0.3s ease;
+        }
+        .progress-segment.active { background: var(--accent); }
+        .progress-segment.viewed { background: var(--text-primary); }
+
+        .header { padding: 44px 16px 10px; display: flex; align-items: center; gap: 12px; }
+
+        .back-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--bg-tertiary); border: none;
+            color: var(--text-primary); font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition);
+        }
+        .back-btn:hover { background: var(--accent); }
+
+        .header-info { flex: 1; min-width: 0; }
+        .category-label { font-size: 14px; font-weight: 600; }
+        .category-sublabel { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .cards-wrapper { flex: 1; position: relative; overflow: hidden; }
+
+        .card {
+            position: absolute; inset: 0; padding: 10px 16px;
+            display: flex; flex-direction: column;
+            opacity: 0; transform: translateX(100%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .card.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+        .card.prev { transform: translateX(-100%); }
+
+        .card-content {
+            flex: 1; display: flex; flex-direction: column;
+            background: var(--bg-card); border-radius: var(--card-radius);
+            border: 1px solid rgba(255,255,255,0.04);
+            overflow: hidden; position: relative;
+        }
+
+        .card-hero { width: 100%; padding: 24px 22px; position: relative; overflow: hidden; flex-shrink: 0; }
+        .card-hero-icon { font-size: 36px; display: block; }
+        .card-hero-pattern { position: absolute; top: -20px; right: -20px; width: 110px; height: 110px; border-radius: 50%; opacity: 0.06; }
+
+        .card-body {
+            padding: 18px 22px 28px; flex: 1;
+            display: flex; flex-direction: column;
+            overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative;
+        }
+        .card-body::-webkit-scrollbar { display: none; }
+
+        /* Scroll fade */
+        .card-content::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 48px; background: linear-gradient(to bottom, transparent, var(--bg-card));
+            pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 5;
+        }
+        .card-content.has-scroll::after { opacity: 1; }
+        .card-content.scrolled-bottom::after { opacity: 0; }
+
+        .card-number { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; }
+
+        .card-headline { font-size: 21px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; }
+        .tag-beginner { background: rgba(74,222,128,0.12); color: var(--green); }
+        .tag-intermediate { background: rgba(96,165,250,0.12); color: var(--blue); }
+        .tag-advanced { background: rgba(167,139,250,0.12); color: var(--purple); }
+        .tag-free { background: rgba(251,191,36,0.12); color: var(--yellow); }
+        .tag-paid { background: rgba(244,114,182,0.12); color: var(--pink); }
+
+        .card-summary { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 14px; }
+
+        /* i-buttons — BIGGER TAP TARGETS */
+        .i-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+        .i-button {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--bg-tertiary); border: 1px solid rgba(255,255,255,0.06);
+            padding: 10px 16px; border-radius: 22px;
+            font-size: 13px; font-weight: 500; color: var(--text-primary);
+            cursor: pointer; transition: all var(--transition);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 42px; /* minimum touch target */
+        }
+        .i-button:hover { background: var(--accent-glow); border-color: rgba(232,131,74,0.4); }
+
+        .i-icon {
+            width: 22px; height: 22px; border-radius: 50%; background: var(--i-button);
+            color: #000; font-size: 12px; font-weight: 700; font-style: italic;
+            display: flex; align-items: center; justify-content: center;
+            font-family: Georgia, serif; flex-shrink: 0;
+        }
+
+        .resource-links { margin-top: auto; }
+
+        .resource-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 13px; background: var(--bg-tertiary);
+            border-radius: 11px; margin-bottom: 7px;
+            text-decoration: none; color: var(--text-primary);
+            transition: all 0.15s ease; border: 1px solid transparent;
+        }
+        .resource-link:hover { border-color: rgba(232,131,74,0.3); transform: translateX(2px); }
+        .resource-link-icon { font-size: 15px; width: 22px; text-align: center; flex-shrink: 0; }
+        .resource-link-info { flex: 1; min-width: 0; }
+        .resource-link-name { font-size: 13px; font-weight: 600; }
+        .resource-link-url { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .resource-link-arrow { color: var(--text-muted); font-size: 13px; flex-shrink: 0; }
+
+        /* Next card preview */
+        .next-preview {
+            display: none; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px 16px; font-size: 12px; color: var(--text-muted);
+            cursor: pointer; transition: color 0.15s;
+        }
+        .next-preview:hover { color: var(--text-secondary); }
+        .next-preview.visible { display: flex; }
+        .next-preview-label { font-weight: 500; }
+        .next-preview-title { color: var(--text-secondary); font-weight: 600; }
+
+        /* Nav areas */
+        .nav-area { position: absolute; top: 0; bottom: 0; width: 25%; z-index: 10; cursor: pointer; }
+        .nav-left { left: 0; }
+        .nav-right { right: 0; }
+
+        .swipe-hint {
+            text-align: center; padding: 6px; font-size: 12px;
+            color: var(--text-muted); animation: fadeHint 3s ease-in-out forwards;
+        }
+        @keyframes fadeHint { 0% { opacity: 0; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+        .swipe-hint.hidden { display: none; }
+
+        /* Footer */
+        .footer { padding: 8px 16px 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .footer-brand { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .footer-brand span { color: var(--accent); font-weight: 700; }
+        .footer-cta {
+            font-size: 11px; color: var(--accent); text-decoration: none;
+            font-weight: 600; margin-left: 8px; opacity: 0.8; transition: opacity 0.15s;
+        }
+        .footer-cta:hover { opacity: 1; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+            z-index: 1000; align-items: flex-end; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-secondary); border-radius: 20px 20px 0 0;
+            width: 100%; max-width: 430px; max-height: 55vh;
+            display: flex; flex-direction: column; animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-handle { width: 36px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin: 10px auto 0; }
+
+        .modal-header {
+            padding: 14px 20px 10px; display: flex;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .modal-title { display: flex; align-items: center; gap: 10px; }
+        .modal-title-text { font-size: 16px; font-weight: 700; }
+        .type-badge {
+            font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
+            background: rgba(232,131,74,0.12); color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.5px; font-family: 'JetBrains Mono', monospace;
+        }
+
+        .modal-close {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--bg-tertiary); border: none;
+            color: var(--text-primary); font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .modal-body { padding: 14px 20px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .modal-content { font-size: 14px; line-height: 1.7; color: var(--text-secondary); }
+        .modal-content strong { color: var(--text-primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="desktop-wrapper">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-logo"><span class="logo-dot"></span> iTabs</div>
+            <h2 class="sidebar-title">iTabs / Claude</h2>
+            <p class="sidebar-subtitle">Find the right tool for you</p>
+            <p class="sidebar-section-label">Paths</p>
+            <div id="sidebarPaths"></div>
+            <div class="sidebar-progress" id="sidebarProgress">
+                <div class="sidebar-progress-label">Explored</div>
+                <div class="sidebar-progress-bar"><div class="sidebar-progress-fill" id="sidebarProgressFill" style="width:0%"></div></div>
+                <div class="sidebar-progress-text" id="sidebarProgressText">0 of 17 resources</div>
+            </div>
+            <div class="sidebar-cta">
+                <p class="sidebar-cta-text">Want this format for your business?</p>
+                <a href="https://itabs.ai" target="_blank" class="sidebar-cta-link">Built with iTabs →</a>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <div class="container">
+                <!-- DESKTOP WELCOME -->
+                <div class="desktop-welcome active" id="desktopWelcome">
+                    <div class="desktop-welcome-icon">🧭</div>
+                    <h2 class="desktop-welcome-title">Find the right <span class="highlight">Claude tool</span></h2>
+                    <p class="desktop-welcome-desc">Resources organised by what you need, not what things are. Pick a path from the sidebar, or let us recommend one.</p>
+                    <button class="desktop-welcome-quiz" id="desktopQuizBtn">Not sure? Take the quiz →</button>
+                    <p class="desktop-welcome-hint">← Or browse paths on the left</p>
+                    <p style="font-size:12px;color:var(--text-muted);margin-top:24px;font-family:'JetBrains Mono',monospace;">itabs.ai/claude</p>
+                </div>
+
+                <!-- LANDING (mobile) -->
+                <div class="screen landing" id="landingScreen">
+                    <div class="landing-header">
+                        <div class="landing-logo"><span class="logo-dot"></span> iTabs</div>
+                        <h1 class="landing-title">Find the right<br><span class="highlight">Claude tool</span> for you</h1>
+                        <p class="landing-subtitle">Organised by what you need, not what things are.</p>
+                    </div>
+                    <div class="start-here-banner" id="startHereBanner">
+                        <div class="start-here-icon">🧭</div>
+                        <div class="start-here-info">
+                            <div class="start-here-label">Not sure where to start?</div>
+                            <div class="start-here-desc">Answer 2 quick questions, get a recommendation</div>
+                        </div>
+                        <div class="start-here-arrow">→</div>
+                    </div>
+                    <p class="section-label">Or browse by goal</p>
+                    <div class="mobile-progress" id="mobileProgress">
+                        <div class="mobile-progress-bar"><div class="mobile-progress-fill" id="mobileProgressFill" style="width:0%"></div></div>
+                        <div class="mobile-progress-text" id="mobileProgressText">0/17</div>
+                    </div>
+                    <div class="path-cards" id="pathCards"></div>
+                    <div class="footer">
+                        <span class="footer-brand">Powered by <span>iTabs</span></span>
+                        <a href="https://itabs.ai" target="_blank" class="footer-cta">Want this for your business?</a>
+                    </div>
+                </div>
+
+                <!-- QUIZ -->
+                <div class="screen quiz" id="quizScreen">
+                    <div class="quiz-header">
+                        <button class="quiz-back" id="quizBack">← Back</button>
+                        <h2 class="quiz-title">Find your starting point</h2>
+                        <p class="quiz-subtitle">2 quick questions</p>
+                    </div>
+                    <div class="quiz-progress" id="quizProgress"></div>
+                    <div id="quizBody"></div>
+                    <div class="quiz-result" id="quizResult">
+                        <div class="quiz-result-icon" id="quizResultIcon"></div>
+                        <h3 class="quiz-result-title" id="quizResultTitle"></h3>
+                        <p class="quiz-result-desc" id="quizResultDesc"></p>
+                        <p class="quiz-result-start" id="quizResultStart"></p>
+                        <button class="quiz-result-btn" id="quizResultBtn">Take me there →</button>
+                    </div>
+                </div>
+
+                <!-- CARDS -->
+                <div class="screen cards-screen" id="cardsScreen">
+                    <div class="progress-container" id="progress"></div>
+                    <div class="header">
+                        <button class="back-btn" id="backBtn">←</button>
+                        <div class="header-info">
+                            <div class="category-label" id="categoryLabel"></div>
+                            <div class="category-sublabel" id="categorySublabel"></div>
+                        </div>
+                    </div>
+                    <div class="cards-wrapper" id="cardsWrapper">
+                        <div class="nav-area nav-left" id="navLeft"></div>
+                        <div class="nav-area nav-right" id="navRight"></div>
+                    </div>
+                    <div class="next-preview" id="nextPreview">
+                        <span class="next-preview-label">Next:</span>
+                        <span class="next-preview-title" id="nextPreviewTitle"></span>
+                        <span>→</span>
+                    </div>
+                    <div class="swipe-hint" id="swipeHint">← Swipe or tap edges to navigate →</div>
+                    <div class="footer">
+                        <span class="footer-brand">Powered by <span>iTabs</span></span>
+                        <a href="https://itabs.ai" target="_blank" class="footer-cta">Want this for your business?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="modal-title-text" id="modalTerm"></span>
+                    <span class="type-badge" id="modalType"></span>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-content" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================
+    // DATA
+    // ============================================
+    const PATHS = [
+        {
+            id: "learn", icon: "📚", name: "Learn Claude", desc: "Courses, guides & prompt tips", color: "#4ade80",
+            cards: [
+                {
+                    icon: "🎓", headline: "Anthropic Academy",
+                    summary: "Free courses straight from the source. Start with AI Fluency, then Claude API and Claude Code in Action. Structured learning with hands-on exercises.",
+                    tags: ["beginner", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "AI Fluency Course", content: "A free foundational course covering how to collaborate with AI effectively, efficiently, and ethically. Perfect starting point if you're new to Claude or AI in general."},
+                        {type: "who-is-it-for", term: "Who's this for?", content: "Anyone starting out — no coding required. Tradies, marketers, managers, students. If you can use a web browser, you can do this course."},
+                        {type: "tip", term: "Pro tip", content: "Do the courses in order: AI Fluency first, then Claude API, then Claude Code. Each builds on the last. The Claude Code course alone can save you weeks of trial and error."}
+                    ],
+                    links: [
+                        {name: "AI Fluency Course", url: "https://anthropic.skilljar.com/ai-fluency-framework-foundations", icon: "🎓"},
+                        {name: "All Courses", url: "https://anthropic.skilljar.com", icon: "💻"}
+                    ]
+                },
+                {
+                    icon: "📖", headline: "Prompt Library",
+                    summary: "50+ ready-to-use prompt templates from Anthropic. Copy, paste, customise. Covers coding, analysis, writing, creative work and more.",
+                    tags: ["beginner", "free"],
+                    iButtons: [
+                        {type: "why-it-matters", term: "Why prompts matter", content: "The difference between a mediocre and brilliant Claude response usually comes down to how you ask. A well-structured prompt with XML tags and clear instructions can 10x your output quality."},
+                        {type: "tip", term: "Best technique", content: "Use XML tags to structure complex prompts. Be specific about format, length, and audience. Give examples of what good output looks like. Claude responds best to clear, detailed instructions."}
+                    ],
+                    links: [
+                        {name: "Official Prompt Library", url: "https://docs.anthropic.com/en/resources/prompt-library/library", icon: "📖"},
+                        {name: "Prompt Engineering Docs", url: "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview", icon: "🛠"}
+                    ]
+                },
+                {
+                    icon: "🍳", headline: "Claude Cookbook",
+                    summary: "Production-ready code recipes on GitHub. Classification, RAG, summarisation, tool use, image generation, sub-agents. Copy the code, adapt it.",
+                    tags: ["intermediate", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "RAG", content: "Retrieval Augmented Generation — a technique where Claude pulls in external data (documents, databases, web pages) to give more accurate, up-to-date answers."},
+                        {type: "what-is-it", term: "Sub-agents", content: "Using a smaller, faster Claude model (like Haiku) to handle subtasks, while a larger model (Opus) orchestrates the overall workflow. Saves money and speeds things up."},
+                        {type: "who-is-it-for", term: "Skill level?", content: "You'll need some Python experience to use these directly, but even non-coders can learn patterns from reading them. Great for vibe coders who want to level up."}
+                    ],
+                    links: [{name: "Claude Cookbook (GitHub)", url: "https://github.com/anthropics/anthropic-cookbook", icon: "🍳"}]
+                },
+                {
+                    icon: "⭐", headline: "Awesome Claude",
+                    summary: "Community-curated directory of everything Claude. SDKs, tools, extensions, integrations, MCP servers — all in one place.",
+                    tags: ["beginner", "free"],
+                    iButtons: [
+                        {type: "why-it-matters", term: "Why use this?", content: "Instead of searching across GitHub, blog posts, and documentation, this single site organises hundreds of Claude resources by category. Updated by the community."},
+                        {type: "tip", term: "Navigation tip", content: "Start with 'Official Resources' at the top, then explore community tools. Star counts help gauge quality, but don't ignore low-star repos — some gems are brand new."}
+                    ],
+                    links: [{name: "awesomeclaude.ai", url: "https://awesomeclaude.ai", icon: "⭐"}]
+                }
+            ]
+        },
+        {
+            id: "build", icon: "🔨", name: "Build Something", desc: "Code, deploy & ship with Claude", color: "#60a5fa",
+            cards: [
+                {
+                    icon: "⌨️", headline: "Claude Code",
+                    summary: "An agentic coding tool in your terminal. Understands your codebase, writes code, runs commands, handles git. Fastest way from idea to working code.",
+                    tags: ["intermediate", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Agentic coding", content: "Unlike a chatbot that suggests code, Claude Code actually executes it. Reads files, writes new ones, runs tests, fixes bugs — all from your terminal."},
+                        {type: "tip", term: "Getting started", content: "Install with npm: 'npm install -g @anthropic-ai/claude-code'. Requires Node.js 18+. Works on Mac, Linux, Windows (WSL). Start in your project directory."},
+                        {type: "who-is-it-for", term: "For vibe coders?", content: "Absolutely. Describe what you want in plain English, it writes the code. You don't need to understand every line — just the outcome you're after."}
+                    ],
+                    links: [
+                        {name: "Claude Code Docs", url: "https://docs.claude.com/en/docs/claude-code", icon: "📚"},
+                        {name: "Resource List (100+)", url: "https://www.scriptbyai.com/claude-code-resource-list/", icon: "🔗"}
+                    ]
+                },
+                {
+                    icon: "🧩", headline: "Skills & Plugins",
+                    summary: "Teach Claude repeatable workflows. Skills are instruction folders Claude loads dynamically — like giving it a playbook for specific tasks.",
+                    tags: ["intermediate", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "SKILL.md", content: "The core of every skill — a markdown file with YAML frontmatter and instructions. Think of it as a recipe card for a specific type of task."},
+                        {type: "example", term: "Real example", content: "The 'docx' skill teaches Claude to create professional Word documents. The 'pptx' skill creates presentations. Build skills for anything."},
+                        {type: "tip", term: "Quick start", content: "Say 'Help me build a skill using skill-creator' in Claude.ai. It walks you through the process interactively."}
+                    ],
+                    links: [
+                        {name: "Skills Guide (PDF)", url: "https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf", icon: "📄"},
+                        {name: "Awesome Claude Skills", url: "https://github.com/travisvn/awesome-claude-skills", icon: "⭐"},
+                        {name: "Official Skills Repo", url: "https://github.com/anthropics/skills", icon: "🧩"}
+                    ]
+                },
+                {
+                    icon: "🔌", headline: "API & SDKs",
+                    summary: "Build Claude into your own apps. Programmatic access to all models. SDKs in Python, TypeScript, Java, Go, Ruby, PHP, and C#.",
+                    tags: ["advanced", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Which model?", content: "Haiku: fast & cheap. Sonnet: balanced all-rounder. Opus: most capable. Most devs start with Sonnet for best cost-to-quality ratio."},
+                        {type: "tip", term: "Cost saving", content: "Prompt caching avoids resending the same context — cuts costs dramatically. Batch processing available for non-time-sensitive tasks at lower rates."},
+                        {type: "what-is-it", term: "MCP Protocol", content: "Model Context Protocol — USB-C for AI. One universal connector for databases, APIs, file systems. Huge ecosystem growing fast."}
+                    ],
+                    links: [
+                        {name: "API Documentation", url: "https://platform.claude.com/docs/en/about-claude/models/overview", icon: "📚"},
+                        {name: "Python SDK", url: "https://github.com/anthropics/anthropic-sdk-python", icon: "🐍"},
+                        {name: "TypeScript SDK", url: "https://github.com/anthropics/anthropic-sdk-typescript", icon: "📘"}
+                    ]
+                },
+                {
+                    icon: "🤖", headline: "AI Agents",
+                    summary: "Autonomous agents that plan, execute multi-step workflows, use tools, and coordinate with sub-agents. The frontier of what's possible.",
+                    tags: ["advanced", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Multi-agent", content: "Coordinate multiple specialised agents. A planner breaks down the task, specialists handle each piece, an orchestrator assembles the result."},
+                        {type: "example", term: "Real use case", content: "An agent monitoring GitHub PRs, reviewing code for security, writing test suggestions, posting comments — all automatically."},
+                        {type: "who-is-it-for", term: "Ready for this?", content: "Comfortable with Claude Code and API basics? You're ready. Start with single-agent workflows before going multi-agent."}
+                    ],
+                    links: [
+                        {name: "Agents Collection (25k⭐)", url: "https://github.com/anthropics/agents", icon: "🤖"},
+                        {name: "Claude Squad", url: "https://github.com/smtg-ai/claude-squad", icon: "👥"}
+                    ]
+                }
+            ]
+        },
+        {
+            id: "automate", icon: "⚡", name: "Automate Work", desc: "Excel, Chrome, desktop & more", color: "#fbbf24",
+            cards: [
+                {
+                    icon: "📊", headline: "Claude in Excel",
+                    summary: "AI in your spreadsheets. Analyse data, write formulas, clean datasets, build reports. Reads multi-tab workbooks with cell-level citations.",
+                    tags: ["beginner", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "How it works", content: "Claude appears as a sidebar inside Excel. Describe what you want ('create a pivot summary', 'clean these dates'), and Claude does it. No coding needed."},
+                        {type: "example", term: "For tradies", content: "Paste a messy supplier price list, say 'organise by category, flag items over $500, compare with last quarter.' Done in seconds."},
+                        {type: "tip", term: "Best for", content: "Accounting, HR data, financial modelling, data cleanup, report generation. Great when you have domain knowledge but want Claude to handle the Excel mechanics."}
+                    ],
+                    links: [
+                        {name: "Claude in Excel", url: "https://claude.com/claude-in-excel", icon: "📊"},
+                        {name: "Help Center Guide", url: "https://support.claude.com/en/articles/12650343-using-claude-in-excel", icon: "📖"}
+                    ]
+                },
+                {
+                    icon: "🌐", headline: "Claude in Chrome",
+                    summary: "Browsing agent in your browser. Navigates sites, fills forms, manages Slack, Gmail, Calendar. Takes actions on your behalf with full transparency.",
+                    tags: ["beginner", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Browsing agent?", content: "Claude controls your Chrome browser — clicks buttons, fills forms, navigates tabs, reads pages, completes multi-step workflows."},
+                        {type: "tip", term: "Best use cases", content: "Scheduling meetings, drafting Gmail replies, updating project boards, filling forms, multi-site research. Anything repetitive in web apps."},
+                        {type: "who-is-it-for", term: "Requirements", content: "Available in beta on all paid plans. Install from Chrome Web Store and sign in with your Claude credentials."}
+                    ],
+                    links: [
+                        {name: "Claude in Chrome", url: "https://claude.com/chrome", icon: "🌐"},
+                        {name: "Getting Started", url: "https://support.claude.com/en/articles/12012173-getting-started-with-claude-in-chrome", icon: "📖"}
+                    ]
+                },
+                {
+                    icon: "🖥", headline: "Claude Cowork",
+                    summary: "Desktop agent for non-developers. Works with local files in an isolated VM. Process documents, build spreadsheets and presentations through natural language.",
+                    tags: ["beginner", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "How it's different", content: "Claude.ai is a chat, Claude Code is a terminal tool, Cowork sits on your desktop and works with your local files directly."},
+                        {type: "example", term: "Practical example", content: "Drop 50 invoices in a folder, tell Cowork to extract totals, dates, and suppliers into a summary spreadsheet. It reads, processes, outputs."},
+                        {type: "who-is-it-for", term: "Perfect for", content: "Small business owners, office managers, anyone drowning in document processing. No technical skills needed."}
+                    ],
+                    links: [
+                        {name: "Download Claude Desktop", url: "https://claude.com/download", icon: "🖥"},
+                        {name: "Cowork Help Center", url: "https://support.claude.com/en/articles/14936581-getting-started-with-cowork", icon: "📖"}
+                    ]
+                },
+                {
+                    icon: "🔗", headline: "Integrations & MCP",
+                    summary: "Connect Claude to tools you already use. MCP provides one universal protocol for databases, APIs, file systems, and services.",
+                    tags: ["intermediate", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "MCP explained", content: "USB-C for AI. One standard protocol wraps any data source, Claude connects automatically. No custom integrations needed."},
+                        {type: "example", term: "Examples", content: "MCP servers for Slack, GitHub, Google Drive, Postgres, Stripe, S&P Global, Moody's. Install one, Claude uses it immediately."},
+                        {type: "tip", term: "Getting started", content: "Try connecting one tool you use daily. Usually just a few lines of config. Works with Claude Code, Desktop, and the API."}
+                    ],
+                    links: [
+                        {name: "MCP Documentation", url: "https://docs.claude.com/en/docs/mcp", icon: "🔗"},
+                        {name: "MCP Servers Directory", url: "https://github.com/modelcontextprotocol/servers", icon: "📂"}
+                    ]
+                }
+            ]
+        },
+        {
+            id: "create", icon: "✨", name: "Create Content", desc: "Documents, presentations & files", color: "#a78bfa",
+            cards: [
+                {
+                    icon: "📄", headline: "File Creation",
+                    summary: "Real downloadable files — Word docs, PowerPoints, spreadsheets, PDFs. Proper formatting, layouts, and structure.",
+                    tags: ["beginner", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "What formats?", content: "Word (.docx), PowerPoint (.pptx), Excel (.xlsx), PDF, Markdown, HTML, React, SVG. All with proper formatting and structure."},
+                        {type: "tip", term: "Best approach", content: "Be specific: 'Create a 10-slide pitch deck for a fencing business with pricing table, testimonials section, dark theme.' More detail = better output."},
+                        {type: "who-is-it-for", term: "Game changer for", content: "Small business owners who need professional documents. Tradies who need quote templates, safety docs, client presentations."}
+                    ],
+                    links: [{name: "Create & Edit Files", url: "https://support.claude.com/en/articles/10862875-creating-and-editing-files-with-claude", icon: "📄"}]
+                },
+                {
+                    icon: "🎨", headline: "Interactive Artifacts",
+                    summary: "Live, interactive web components built right in chat. React apps, visualisations, calculators, games — rendered instantly, ready to embed.",
+                    tags: ["intermediate", "free"],
+                    iButtons: [
+                        {type: "what-is-it", term: "What's an artifact?", content: "Code (HTML, React, SVG) that Claude renders live in a preview window. Interact with it, iterate, copy the code. This navigator is basically an artifact."},
+                        {type: "example", term: "iTabs connection", content: "Artifacts are how iTabs prototypes get built — describe the widget, Claude creates it, you test interactively, refine, then deploy."},
+                        {type: "tip", term: "Power move", content: "Use the Anthropic API inside artifacts for AI-powered tools. Claude-in-Claude: your artifact makes its own API calls for real-time AI features."}
+                    ],
+                    links: [{name: "Claude.ai", url: "https://claude.ai", icon: "🎨"}]
+                },
+                {
+                    icon: "🧠", headline: "Projects & Memory",
+                    summary: "Persistent context across conversations. Upload reference docs, set custom instructions. Memory remembers your preferences and ongoing work.",
+                    tags: ["beginner", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Projects", content: "Workspaces. Upload brand guidelines, specs, reference docs. Set instructions like 'always write in Australian English.' Every conversation inherits the context."},
+                        {type: "tip", term: "Power user tip", content: "Separate projects for different clients. Upload templates, style guides, examples. Claude starts every conversation already understanding your business."},
+                        {type: "what-is-it", term: "Memory", content: "Claude remembers things across conversations — name, work context, preferences, ongoing projects. Builds naturally over time."}
+                    ],
+                    links: [{name: "Projects Help Center", url: "https://support.claude.com/en/articles/9887942-how-to-create-and-manage-projects", icon: "📁"}]
+                }
+            ]
+        },
+        {
+            id: "level-up", icon: "🚀", name: "Level Up", desc: "Advanced techniques & strategy", color: "#f472b6",
+            cards: [
+                {
+                    icon: "💎", headline: "Choosing the Right Model",
+                    summary: "Opus, Sonnet, or Haiku — each has different strengths, speeds, costs. Picking right saves money and gets better results.",
+                    tags: ["intermediate", "paid"],
+                    iButtons: [
+                        {type: "what-is-it", term: "Model comparison", content: "Opus: best quality, highest cost — complex analysis, creative writing. Sonnet: great balance — your daily driver. Haiku: fastest, cheapest — simple tasks, sub-agents."},
+                        {type: "tip", term: "When to use Opus", content: "Deep reasoning, nuanced writing, high-stakes decisions, quality over speed. For everything else, Sonnet is usually better value."}
+                    ],
+                    links: [{name: "Models Overview", url: "https://platform.claude.com/docs/en/about-claude/models/overview", icon: "💎"}]
+                },
+                {
+                    icon: "🔄", headline: "The Vibe Coding Revolution",
+                    summary: "How AI coding agents are reshaping development. The shift from copilots to autonomous agents, and where the industry is heading.",
+                    tags: ["intermediate", "free"],
+                    iButtons: [
+                        {type: "why-it-matters", term: "The shift", content: "Moving from 'AI suggests, human writes' to 'human describes, AI builds.' This is vibe coding — and it's accelerating fast."},
+                        {type: "tip", term: "For vibe coders", content: "You don't need to be a traditional developer. Focus on describing what you want clearly, understanding high-level system design, and reviewing output."}
+                    ],
+                    links: [{name: "Coding Agents (Anthropic)", url: "https://www.anthropic.com/news/coding-agents", icon: "📰"}]
+                }
+            ]
+        }
+    ];
+
+    // Total card count
+    const TOTAL_CARDS = PATHS.reduce((sum, p) => sum + p.cards.length, 0);
+
+    // ============================================
+    // QUIZ — 2 questions, both affect the result
+    // Q1 = experience → filters difficulty
+    // Q2 = goal → picks the path + starting card
+    // ============================================
+    const QUIZ_QUESTIONS = [
+        {
+            question: "What's your technical experience?",
+            options: [
+                {icon: "🌱", label: "Non-technical — I use apps, not code", value: "beginner"},
+                {icon: "🔧", label: "Handy — I can follow instructions & tweak", value: "intermediate"},
+                {icon: "💻", label: "Technical — I code or have dev experience", value: "advanced"}
+            ]
+        },
+        {
+            question: "What's your main goal right now?",
+            options: [
+                {icon: "📚", label: "Learn what Claude can do", value: "learn"},
+                {icon: "🔨", label: "Build an app or tool", value: "build"},
+                {icon: "⚡", label: "Automate repetitive work", value: "automate"},
+                {icon: "✨", label: "Create documents or content", value: "create"}
+            ]
+        }
+    ];
+
+    // path + startCard index for each combo
+    const QUIZ_RESULTS = {
+        "beginner-learn":     {path:"learn",    card:0, icon:"🎓", title:"Start with Anthropic Academy",    desc:"Free structured courses — no coding needed. Go from 'what is Claude?' to using it effectively in a few hours.", start:"Starting you at: Anthropic Academy"},
+        "beginner-build":     {path:"learn",    card:0, icon:"📚", title:"Learn first, then build",         desc:"Start with the Academy, then the Prompt Library. Once comfortable, the Build path will click.", start:"Starting you at: Anthropic Academy"},
+        "beginner-automate":  {path:"automate", card:0, icon:"📊", title:"Try Claude in Excel",             desc:"No code needed. Claude works inside Excel. Describe what you want, Claude does the rest.", start:"Starting you at: Claude in Excel"},
+        "beginner-create":    {path:"create",   card:0, icon:"📄", title:"Start Creating Files",            desc:"Claude generates real Word docs, presentations, spreadsheets. Describe what you need, download the result.", start:"Starting you at: File Creation"},
+        "intermediate-learn": {path:"learn",    card:1, icon:"📖", title:"Dive into the Prompt Library",    desc:"You know the basics. Level up with structured prompts, XML tags, and the Cookbook recipes.", start:"Starting you at: Prompt Library"},
+        "intermediate-build": {path:"build",    card:0, icon:"⌨️", title:"Get Claude Code",                 desc:"Terminal + Claude Code = rapid building. Describe what you want, it writes the code. Perfect for vibe coding.", start:"Starting you at: Claude Code"},
+        "intermediate-automate":{path:"automate",card:3, icon:"🔗", title:"Explore MCP Integrations",       desc:"Connect Claude to your existing tools. MCP servers talk to Slack, GitHub, databases with minimal setup.", start:"Starting you at: Integrations & MCP"},
+        "intermediate-create":{path:"create",   card:1, icon:"🎨", title:"Build with Artifacts",            desc:"Interactive tools, visualisations, widgets right in Claude chat. Iterate visually, copy the code to deploy.", start:"Starting you at: Interactive Artifacts"},
+        "advanced-learn":     {path:"level-up", card:0, icon:"🚀", title:"Level Up your strategy",          desc:"You know Claude — now optimise. Model selection, cost management, agent architecture.", start:"Starting you at: Choosing the Right Model"},
+        "advanced-build":     {path:"build",    card:3, icon:"🤖", title:"Build AI Agents",                 desc:"Multi-agent orchestration, autonomous workflows, Claude Squad. The frontier.", start:"Starting you at: AI Agents"},
+        "advanced-automate":  {path:"build",    card:1, icon:"🧩", title:"Build Custom Skills",             desc:"Create repeatable workflows Claude loads dynamically. Skills + MCP + Agents = fully automated pipelines.", start:"Starting you at: Skills & Plugins"},
+        "advanced-create":    {path:"build",    card:1, icon:"🧩", title:"Create Skills & Templates",       desc:"Package your expertise into Skills. Brand guidelines, document templates, deployment workflows — all codified.", start:"Starting you at: Skills & Plugins"}
+    };
+
+    // ============================================
+    // STATE
+    // ============================================
+    let currentPath = null;
+    let currentCard = 0;
+    let visitedPaths = new Set();
+    let viewedCards = new Set(); // "pathId-cardIndex"
+    let quizStep = 0;
+    let quizAnswers = [];
+    let isDesktop = () => window.innerWidth >= 780;
+
+    // ============================================
+    // DOM
+    // ============================================
+    const $ = id => document.getElementById(id);
+    const desktopWelcome = $('desktopWelcome');
+    const landingScreen = $('landingScreen');
+    const quizScreen = $('quizScreen');
+    const cardsScreen = $('cardsScreen');
+    const pathCardsEl = $('pathCards');
+    const sidebarPathsEl = $('sidebarPaths');
+    const progress = $('progress');
+    const categoryLabel = $('categoryLabel');
+    const categorySublabel = $('categorySublabel');
+    const cardsWrapper = $('cardsWrapper');
+    const navLeft = $('navLeft');
+    const navRight = $('navRight');
+    const backBtn = $('backBtn');
+    const modalOverlay = $('modalOverlay');
+    const modalTerm = $('modalTerm');
+    const modalType = $('modalType');
+    const modalContent = $('modalContent');
+    const modalClose = $('modalClose');
+    const swipeHint = $('swipeHint');
+    const nextPreview = $('nextPreview');
+    const nextPreviewTitle = $('nextPreviewTitle');
+
+    // ============================================
+    // INIT
+    // ============================================
+    function init() {
+        // Mobile path cards
+        PATHS.forEach(path => {
+            const card = document.createElement('div');
+            card.className = 'path-card';
+            card.dataset.pathId = path.id;
+            card.innerHTML = `
+                <div class="path-icon" style="background:${path.color}15;color:${path.color}">${path.icon}</div>
+                <div class="path-info">
+                    <div class="path-name">${path.name}</div>
+                    <div class="path-desc">${path.desc}</div>
+                    <div class="path-meta">
+                        <span class="path-count">${path.cards.length} resources</span>
+                        <span class="path-visited-dot"></span>
+                    </div>
+                </div>
+                <div class="path-arrow">→</div>
+            `;
+            card.addEventListener('click', () => openPath(path));
+            pathCardsEl.appendChild(card);
+        });
+
+        // Sidebar paths
+        PATHS.forEach(path => {
+            const el = document.createElement('div');
+            el.className = 'sidebar-path';
+            el.dataset.pathId = path.id;
+            el.innerHTML = `
+                <span class="sidebar-path-icon">${path.icon}</span>
+                <div class="sidebar-path-info">
+                    <div class="sidebar-path-name">${path.name}</div>
+                    <div class="sidebar-path-count">${path.cards.length} resources</div>
+                </div>
+                <span class="viewed-badge">✓</span>
+            `;
+            el.addEventListener('click', () => openPath(path));
+            sidebarPathsEl.appendChild(el);
+        });
+
+        // Show correct initial state
+        if (isDesktop()) {
+            desktopWelcome.classList.add('active');
+        } else {
+            landingScreen.classList.add('active');
+        }
+
+        // Events
+        $('startHereBanner').addEventListener('click', startQuiz);
+        $('desktopQuizBtn').addEventListener('click', startQuiz);
+        backBtn.addEventListener('click', goBack);
+        navLeft.addEventListener('click', () => navigate(-1));
+        navRight.addEventListener('click', () => navigate(1));
+        nextPreview.addEventListener('click', () => navigate(1));
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+        $('quizBack').addEventListener('click', goBack);
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') navigate(-1);
+            if (e.key === 'ArrowRight') navigate(1);
+            if (e.key === 'Escape') {
+                if (modalOverlay.classList.contains('active')) closeModal();
+                else if (cardsScreen.classList.contains('active')) goBack();
+            }
+        });
+
+        let touchStartX = 0;
+        cardsWrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+        cardsWrapper.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
+        });
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            if (!currentPath && !quizScreen.classList.contains('active')) {
+                if (isDesktop()) {
+                    landingScreen.classList.remove('active');
+                    desktopWelcome.classList.add('active');
+                } else {
+                    desktopWelcome.classList.remove('active');
+                    landingScreen.classList.add('active');
+                }
+            }
+        });
+
+        updateProgressCounters();
+    }
+
+    // ============================================
+    // SCREENS
+    // ============================================
+    function switchScreen(name) {
+        [landingScreen, quizScreen, cardsScreen].forEach(s => s.classList.remove('active'));
+        desktopWelcome.classList.remove('active');
+
+        if (name === 'landing') {
+            if (isDesktop()) desktopWelcome.classList.add('active');
+            else landingScreen.classList.add('active');
+        }
+        else if (name === 'quiz') quizScreen.classList.add('active');
+        else if (name === 'cards') cardsScreen.classList.add('active');
+    }
+
+    // ============================================
+    // QUIZ
+    // ============================================
+    function startQuiz() {
+        quizStep = 0;
+        quizAnswers = [];
+        $('quizResult').classList.remove('active');
+        $('quizBody').innerHTML = '';
+        switchScreen('quiz');
+        renderQuizStep();
+    }
+
+    function renderQuizStep() {
+        const q = QUIZ_QUESTIONS[quizStep];
+        $('quizProgress').innerHTML = QUIZ_QUESTIONS.map((_, i) =>
+            `<div class="quiz-step ${i < quizStep ? 'done' : ''} ${i === quizStep ? 'active' : ''}"></div>`
+        ).join('');
+
+        $('quizBody').innerHTML = `
+            <div class="quiz-question">${q.question}</div>
+            <div class="quiz-options">
+                ${q.options.map(opt => `
+                    <button class="quiz-option" data-value="${opt.value}">
+                        <span class="quiz-option-icon">${opt.icon}</span>
+                        ${opt.label}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        $('quizBody').querySelectorAll('.quiz-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                quizAnswers.push(btn.dataset.value);
+                btn.classList.add('selected');
+                setTimeout(() => {
+                    quizStep++;
+                    if (quizStep < QUIZ_QUESTIONS.length) renderQuizStep();
+                    else showQuizResult();
+                }, 250);
+            });
+        });
+    }
+
+    function showQuizResult() {
+        $('quizBody').innerHTML = '';
+        $('quizProgress').innerHTML = QUIZ_QUESTIONS.map(() => '<div class="quiz-step done"></div>').join('');
+
+        const key = `${quizAnswers[0]}-${quizAnswers[1]}`;
+        const result = QUIZ_RESULTS[key] || QUIZ_RESULTS["beginner-learn"];
+        const targetPath = PATHS.find(p => p.id === result.path);
+
+        $('quizResultIcon').textContent = result.icon;
+        $('quizResultTitle').textContent = result.title;
+        $('quizResultDesc').textContent = result.desc;
+        $('quizResultStart').textContent = result.start;
+        $('quizResult').classList.add('active');
+
+        $('quizResultBtn').onclick = () => {
+            if (targetPath) openPath(targetPath, result.card || 0);
+        };
+    }
+
+    // ============================================
+    // PATH NAV
+    // ============================================
+    function openPath(path, startCard = 0) {
+        currentPath = path;
+        currentCard = startCard;
+        visitedPaths.add(path.id);
+        updateVisited();
+
+        categoryLabel.textContent = path.name;
+        categorySublabel.textContent = path.desc;
+
+        progress.innerHTML = '';
+        cardsWrapper.querySelectorAll('.card').forEach(c => c.remove());
+
+        for (let i = 0; i < path.cards.length; i++) {
+            const seg = document.createElement('div');
+            seg.className = 'progress-segment';
+            progress.appendChild(seg);
+        }
+
+        path.cards.forEach((card, i) => {
+            const el = createCard(card, i, path);
+            cardsWrapper.insertBefore(el, navLeft);
+        });
+
+        switchScreen('cards');
+        swipeHint.classList.remove('hidden');
+        updateCard(startCard);
+
+        // Sidebar active
+        document.querySelectorAll('.sidebar-path').forEach(el => {
+            el.classList.toggle('active', el.dataset.pathId === path.id);
+        });
+
+        requestAnimationFrame(checkCardScroll);
+    }
+
+    function goBack() {
+        currentPath = null;
+        document.querySelectorAll('.sidebar-path').forEach(el => el.classList.remove('active'));
+        switchScreen('landing');
+    }
+
+    function navigate(dir) {
+        if (!currentPath) return;
+        const newIdx = currentCard + dir;
+        if (newIdx >= 0 && newIdx < currentPath.cards.length) {
+            updateCard(newIdx);
+            swipeHint.classList.add('hidden');
+        }
+    }
+
+    function updateCard(index) {
+        const cards = cardsWrapper.querySelectorAll('.card');
+        const segs = progress.querySelectorAll('.progress-segment');
+
+        cards.forEach((c, i) => {
+            c.classList.remove('active', 'prev');
+            if (i === index) c.classList.add('active');
+            else if (i < index) c.classList.add('prev');
+        });
+
+        segs.forEach((s, i) => {
+            s.classList.remove('active', 'viewed');
+            if (i === index) s.classList.add('active');
+            else if (i < index) s.classList.add('viewed');
+        });
+
+        currentCard = index;
+
+        // Track viewed
+        if (currentPath) {
+            viewedCards.add(`${currentPath.id}-${index}`);
+            updateProgressCounters();
+        }
+
+        // Next preview
+        if (currentPath && index < currentPath.cards.length - 1) {
+            nextPreviewTitle.textContent = currentPath.cards[index + 1].headline;
+            nextPreview.classList.add('visible');
+        } else {
+            nextPreview.classList.remove('visible');
+        }
+
+        requestAnimationFrame(checkCardScroll);
+    }
+
+    function updateVisited() {
+        document.querySelectorAll('.path-card').forEach(el => {
+            el.classList.toggle('visited', visitedPaths.has(el.dataset.pathId));
+        });
+        document.querySelectorAll('.sidebar-path').forEach(el => {
+            el.classList.toggle('visited', visitedPaths.has(el.dataset.pathId));
+        });
+    }
+
+    function updateProgressCounters() {
+        const count = viewedCards.size;
+        const pct = Math.round((count / TOTAL_CARDS) * 100);
+
+        $('sidebarProgressFill').style.width = `${pct}%`;
+        $('sidebarProgressText').textContent = `${count} of ${TOTAL_CARDS} resources`;
+        $('mobileProgressFill').style.width = `${pct}%`;
+        $('mobileProgressText').textContent = `${count}/${TOTAL_CARDS}`;
+    }
+
+    // ============================================
+    // SCROLL DETECTION
+    // ============================================
+    function checkCardScroll() {
+        const active = cardsWrapper.querySelector('.card.active');
+        if (!active) return;
+        const content = active.querySelector('.card-content');
+        const body = active.querySelector('.card-body');
+        if (!body || !content) return;
+
+        const hasScroll = body.scrollHeight > body.clientHeight + 10;
+        content.classList.toggle('has-scroll', hasScroll);
+        content.classList.toggle('scrolled-bottom', !hasScroll);
+
+        body.onscroll = () => {
+            content.classList.toggle('scrolled-bottom', body.scrollTop + body.clientHeight >= body.scrollHeight - 20);
+        };
+    }
+
+    // ============================================
+    // CARD CREATION
+    // ============================================
+    function createCard(card, index, path) {
+        const el = document.createElement('div');
+        el.className = 'card';
+
+        const tagsHTML = (card.tags || []).map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+
+        let iHTML = '';
+        if (card.iButtons?.length) {
+            iHTML = `<div class="i-buttons">${card.iButtons.map(b => {
+                const label = b.term || getTypeLabel(b.type);
+                return `<button class="i-button" data-type="${b.type}" data-term="${b.term||''}" data-content="${encodeURIComponent(b.content)}">
+                    <span class="i-icon">i</span>${label}</button>`;
+            }).join('')}</div>`;
+        }
+
+        let linksHTML = '';
+        if (card.links?.length) {
+            linksHTML = `<div class="resource-links">${card.links.map(l => {
+                let host; try { host = new URL(l.url).hostname; } catch { host = l.url; }
+                return `<a href="${l.url}" target="_blank" rel="noopener" class="resource-link">
+                    <span class="resource-link-icon">${l.icon}</span>
+                    <div class="resource-link-info"><div class="resource-link-name">${l.name}</div><div class="resource-link-url">${host}</div></div>
+                    <span class="resource-link-arrow">↗</span></a>`;
+            }).join('')}</div>`;
+        }
+
+        el.innerHTML = `
+            <div class="card-content">
+                <div class="card-hero" style="background:linear-gradient(135deg,${path.color}08,${path.color}15)">
+                    <span class="card-hero-icon">${card.icon}</span>
+                    <div class="card-hero-pattern" style="background:${path.color}"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-number" style="color:${path.color}">${index+1} of ${path.cards.length}</div>
+                    <h2 class="card-headline">${card.headline}</h2>
+                    <div class="tags">${tagsHTML}</div>
+                    <p class="card-summary">${card.summary}</p>
+                    ${iHTML}
+                    ${linksHTML}
+                </div>
+            </div>
+        `;
+
+        el.querySelectorAll('.i-button').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                openModal(btn.dataset.term || getTypeLabel(btn.dataset.type), btn.dataset.type, decodeURIComponent(btn.dataset.content));
+            });
+        });
+
+        return el;
+    }
+
+    // ============================================
+    // MODAL
+    // ============================================
+    function getTypeLabel(type) {
+        return {'what-is-it':'What is it?','who-is-it-for':"Who's it for?",'why-it-matters':'Why it matters','tip':'Pro tip','example':'Example','related':'Related'}[type] || type;
+    }
+
+    function openModal(term, type, content) {
+        modalTerm.textContent = term;
+        modalType.textContent = getTypeLabel(type);
+        modalContent.innerHTML = content;
+        modalOverlay.classList.add('active');
+    }
+
+    function closeModal() { modalOverlay.classList.remove('active'); }
+
+    init();
+    </script>
+</body>
+</html>
